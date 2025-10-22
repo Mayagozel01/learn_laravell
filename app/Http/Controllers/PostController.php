@@ -9,8 +9,8 @@ class PostController extends Controller
 {
     public function index()
     {
-        $post = Post::find(1);
-        dd($post->title);
+        $posts = Post::all();
+        return view('posts', compact('posts'));
     }
 
     public function create()
@@ -42,5 +42,21 @@ class PostController extends Controller
         $post = Post::find(3);
         $post->delete();
         dd("Post deleted");
-    }   
+    } 
+    public function firstOrCreate(){
+        $anotherPost = ['title'=>'Second Post1', 'content'=>'22 This is the content of the second post', 'likes'=>500, 'is_published'=>0];
+        $post = Post::withoutGlobalScope('softDeletes')->firstOrCreate([
+            'title'=>'Second Post1'
+        ],$anotherPost);
+        dump($post->content);
+
+    }
+    public function updateOrCreate(){
+         $anotherPost = ['title'=>'New Post 22', 'content'=>'New updated1323 This is the content of the second post', 'likes'=>500, 'is_published'=>0];
+         $post = Post::updateOrCreate(['title'=>'Second Post1'],
+         $anotherPost
+    );
+    dump($post->content);
+    dd("updated or created");  
+    }
 }
