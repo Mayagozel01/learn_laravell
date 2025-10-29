@@ -4,59 +4,47 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Category;
+use App\Models\Tag;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
-        return view('posts', compact('posts'));
+        $posts = Post::find(3);
+        $category = Category::find(1);
+        dd($posts->tags);
+        // return view('post.index', compact('posts'));
     }
-
-    public function create()
-    {
-        $postsArr =[
-            ['title'=>'First Post', 'content'=>'This is the content of the first post', 'likes'=>10, 'is_published'=>1],
-            ['title'=>'Second Post', 'content'=>'This is the content of the second post', 'likes'=>5, 'is_published'=>0],
-            ['title'=>'Third Post', 'content'=>'This is the content of the third post', 'likes'=>8, 'is_published'=>1],
-        ];
-        Post::create($postsArr[0]);
-        dump("Post created");
-        foreach($postsArr as $postData){
-            dump( $postData);
-            Post::create($postData);
-        }
-        dd("Posts created");
+    public function create(){
+        return view('post.create');
     }
-    public function update()
-    {
-        $post = Post::find(2);
-        dump("Before update: ".$post->title." with ".$post->likes." likes");
-        $post->title = "Updated Second Post";
-        $post->likes = 15;
-        $post->save();
-        dd("Post updated");
+    public function store(){
+        $data = request()->validate([
+            "title"=>"string",
+            "content"=>"string",
+            "image"=>"string",
+        ]);
+        Post::create($data);
+        return redirect()->route('post.index');
     }
-    public function delete()
-    {
-        $post = Post::find(3);
+    public function show(Post $post){
+      return view('post.show', compact('post'));
+    }
+     public function edit(Post $post){
+      return view('post.edit', compact('post'));
+    }
+    public function update(Post $post){
+             $data = request()->validate([
+            "title"=>"string",
+            "content"=>"string",
+            "image"=>"string",
+        ]);
+        $post->update($data);
+        return redirect()->route('post.show', $post->id);
+    }
+        public function destroy(Post $post){
         $post->delete();
-        dd("Post deleted");
-    } 
-    public function firstOrCreate(){
-        $anotherPost = ['title'=>'Second Post1', 'content'=>'22 This is the content of the second post', 'likes'=>500, 'is_published'=>0];
-        $post = Post::withoutGlobalScope('softDeletes')->firstOrCreate([
-            'title'=>'Second Post1'
-        ],$anotherPost);
-        dump($post->content);
-
-    }
-    public function updateOrCreate(){
-         $anotherPost = ['title'=>'New Post 22', 'content'=>'New updated1323 This is the content of the second post', 'likes'=>500, 'is_published'=>0];
-         $post = Post::updateOrCreate(['title'=>'Second Post1'],
-         $anotherPost
-    );
-    dump($post->content);
-    dd("updated or created");  
+        return redirect()->route('post.index');
     }
 }
