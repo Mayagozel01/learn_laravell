@@ -20,7 +20,7 @@ Route::get('/posts/{post}',[PostController::class,"show"])->name('post.show');
 Route::post('/posts',[PostController::class,"store"])->name('post.store');
 Route::get('/posts/{post}/edit',[PostController::class,"edit"])->name('post.edit');
 Route::patch('/posts/{post}/update',[PostController::class,"update"])->name('post.update');
-Route::delete('/posts/destroy',[PostController::class,"destroy"])->name('post.delete');
+Route::delete('/posts/{post}',[PostController::class,"destroy"])->name('post.delete');
 
 Route::get('/main',[MainController::class,"index"])->name('main.index');
 Route::get('/about',[AboutController::class,"index"])->name('about.index');
