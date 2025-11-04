@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\PostTag;
 
 class PostController extends Controller
 {
@@ -17,16 +18,30 @@ class PostController extends Controller
     }
     public function create(){
         $categories = Category::all();
-        return view('post.create', compact('categories'));
+        $tags = Tag::all();
+        return view('post.create', compact('categories','tags'));
     }
     public function store(){
         $data = request()->validate([
-            "title"=>"string",
+            "title"=>"required|string",
             "content"=>"string",
-            "image"=>"string",
-            "category_id"=>""
+            "image"=>"required|string",
+            "category_id"=>"required|integer",
+            "tags"=>"array",
+            "tags.*"=>"integer",
         ]);
-        Post::create($data);
+        $tags = $data['tags'];
+        unset($data['tags']);
+        $post = Post::firstOrCreate($data);
+
+    //     foreach ($tags as $tag){
+    //     PostTag::create([
+    //         'tag_id'=>$tag,
+    //         'post_id'=>$post->id,
+    //     ]);
+    // }shuna derek ashaky setiri yazmaly. Bu Post modeldaki shu metodyn barlygy un chagyryp bolyar public function tags(){
+    
+      $post->tags()->attach($tags);
         return redirect()->route('post.index');
     }
     public function show(Post $post){
@@ -51,3 +66,4 @@ class PostController extends Controller
         return redirect()->route('post.index');
     }
 }
+

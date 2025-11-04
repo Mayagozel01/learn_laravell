@@ -19,12 +19,15 @@
           type="text"
           id="title"
           name="title"
-          required
+          value="{{old('title')}}"
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           placeholder="title name"
         />
+        @error('title')
+        <p class="text-red-800">{{$message}}</p>
+        @enderror
       </div>
-
+<!-- message зарезервированное переменное -->
 
       <!-- Message Textarea -->
       <div>
@@ -33,10 +36,12 @@
           id="content"
           name="content"
           rows="4"
-          required
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           placeholder="Tell us about your inquiry..."
-        ></textarea>
+        >{{old('content')}}</textarea>
+        @error('content')
+        <p class="text-red-800">{{$message}}</p>
+        @enderror
       </div>
             <div>
         <label for="image" class="block text-sm font-medium text-gray-700 mb-2">image</label>
@@ -44,18 +49,35 @@
           type="text"
           id="image"
           name="image"
+          value="{{old('name')}}"
           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           placeholder="image"
         />
+          @error('image')
+        <p class="text-red-800">{{$message}}</p>
+        @enderror
       </div>
       <div class="mb-4">
                 <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Choose category</label>
                 <select id="category" name="category_id" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 @foreach ($categories as $category)    
-                <option value="{{$category->id}}">{{$category->title}}</option>
+                <option 
+                {{ old('category_id') == $category->id ? 'selected' : ''}}
+                value="{{$category->id}}">{{$category->title}}</option>
                 @endforeach
                 </select>
             </div>
+
+              <div class="mb-4">
+                <label for="tags" class="block text-sm font-medium text-gray-700 mb-2">Choose tags</label>
+                <select id="tags" name="tags[]" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                multiple>
+                @foreach ($tags as $tag)    
+                <option value="{{$tag->id}}">{{$tag->title}}</option>
+                @endforeach
+                </select>
+            </div>
+
       <!-- Submit Button -->
       <div>
         <button
